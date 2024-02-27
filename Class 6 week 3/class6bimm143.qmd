@@ -1,0 +1,209 @@
+---
+title: "Class 6: R functions"
+author: "Lilia Jimenez (PID:A16262599)"
+date: 01/25/24
+format: pdf
+---
+
+#R functions
+functions are how we get stuff done. We call functions to do everything useful in R
+
+One cool thing about R is that it makes writing your own functions comparitively easy
+
+All functions in R have at least 3 things:
+- A **name**(we choose this)
+-1 or more **Input arguments** (the inputs to our function)
+-The **body** (lines of cod that do the work)
+```{r}
+#| eval: false
+
+funname<- function(input1, input2){#The body with R code}
+```
+
+lets write a silly first functionto add two numbers
+
+```{r}
+x<- 5
+y<-1
+x+y
+```
+
+
+
+```{r my fun}
+addme <- function(x,y=1) {x+y}
+```
+
+
+```{r}
+addme(100,100)
+```
+
+```{r}
+addme(100)
+```
+
+## Lab for today
+Start with a simplified version of the problem:
+
+```{r}
+# Example input vectors to start with
+student1 <- c(100, 100, 100, 100, 100, 100, 100, 90)
+student2 <- c(100, NA, 90, 90, 90, 90, 97, 80)
+student3 <- c(90, NA, NA, NA, NA, NA, NA, NA)
+```
+
+lets just find the average
+```{r}
+mean(student1)
+mean(student2, na.rm = TRUE)
+mean(student3, na.rm = TRUE)
+```
+
+This is not fair- there is no way student3 should have a mean of 90!
+
+come back to this NA prob. but things worked for student1
+
+we want to drop lowest score before getting mean
+How do I find the lowest (minimum) score
+```{r}
+min(student1)
+```
+I found the 'whihc.min()' function. maybe this is more useful?
+
+```{r}
+which.min(student1)
+```
+
+cool this is the 8ty element of the vector that has the lowest score. how can i remove this one?
+
+
+```{r}
+student1[which.min(student1)]
+```
+we can use the wee inus trick for indexing
+```{r}
+x <- 1:5
+x[-3]
+```
+
+
+```{r}
+#find the lowest score
+ind<- which.min(student1)
+#remove the lowest score
+mean(student1[-ind])
+```
+
+Use a common shortcut and use 'x' as my input
+```{r}
+x<-student1
+
+mean(x[-which.min(x)])
+```
+
+We still have the problems of missing values.
+
+One idea is to replace NA values with zero.
+
+```{r}
+y<-1:5
+y[y==3]<-10000
+y
+```
+Bummer this is no good...
+```{r}
+y<- c(1,2,NA,4,5)
+y==NA
+```
+```{r}
+is.na(y)
+```
+
+How can I remove the NA element from the vector?
+
+```{r}
+!c(F,F,F)
+y[!is.na(y)]
+
+```
+
+```{r}
+y[is.na(y)]<-0
+y
+```
+
+Ok lets put the pieces together
+
+```{r}
+x<-student3
+
+#change NA value to 0
+x[ is.na(x) ]<- 0
+#find and remove min value and get mean
+mean(x[-which.min(x)])
+
+```
+
+last step now that I have my working code snippet is to make my 'grade()' function
+```{r}
+grade<- function(x) {#change NA value to 0
+x[ is.na(x) ]<- 0
+#find and remove min value and get mean
+mean(x[-which.min(x)])}
+
+```
+
+Now read the online gradebook (CSV file)
+
+```{r}
+url <-  "https://tinyurl.com/gradeinput"
+gradebook <- read.csv(url, row.names = 1)
+
+head(gradebook)
+```
+
+```{r}
+results <- apply(gradebook, 1, grade)
+results
+```
+
+q2 
+
+```{r}
+max(results)
+which.max(results)
+```
+q3.
+```{r}
+apply(gradebook,2,mean, na.rm=T)
+```
+
+```{r}
+which.min(apply(gradebook,2,mean, na.rm=T))
+
+```
+
+```{r}
+which.min(apply(gradebook,2,sum, na.rm=T))
+```
+
+q4
+
+```{r}
+#make all NA (or mask) to zero
+mask <- gradebook
+mask[is.na(mask)]<-0
+#mask
+```
+
+We can use the 'cor()' function for correlation analysez
+```{r}
+cor(mask$hw5,results)
+cor(mask$hw3,results)
+
+```
+I need to use the 'apply()' function to run this analysez over the whole course
+```{r}
+apply(mask,2,cor,results)
+```
