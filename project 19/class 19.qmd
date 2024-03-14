@@ -1,0 +1,29 @@
+---
+title: "Class 19"
+format: html
+---
+q2> what are tumor specific mutations?
+```{r}
+library(bio3d)
+seq1<-read.fasta("A16262599_mutant_seq.fa")
+seq1
+
+```
+
+```{r}
+seq$id
+```
+score residue conservation
+```{r}
+mut<-which(conserv(seq)<1)
+mut
+```
+
+```{r}
+blast.pdb(seq$ali[1,])
+```
+
+
+
+
+

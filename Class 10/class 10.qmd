@@ -1,0 +1,111 @@
+---
+title: "Class 10: Structural Bioinformatics (Pt. 1)"
+author: "Lilia Jimenez (PID:A16262599)"
+format: pdf
+---
+
+##The PDB database
+
+Here we examine the size and composition of the main database of biomolecular structures- the PDB
+
+Get a CSV file from the PDB database and read it into R.
+
+```{r}
+pdbstats<-read.csv("Data Export Summary.csv", row.names = 1)
+head(pdbstats)
+```
+
+>Q1: What percentage of structures in the PDB are solved by X-Ray and Electron Microscopy.
+
+pdbstats data frame has numbers with commas in then this causes issues. lets see:
+```{r}
+pdbstats$X.ray
+```
+We found a function called 'gsub()' now we can figure out how it works
+
+```{r}
+x<-"22,00"
+(as.numeric(gsub(",","",x)))
+```
+
+
+```{r}
+commasum<-function(x){sum((as.numeric(gsub(",","",x))))}
+commasum(pdbstats$X.ray)
+```
+
+apply across all columns
+
+```{r}
+totals<-apply(pdbstats,2,commasum)
+
+```
+
+```{r}
+round(totals/totals["Total"]*100,2)
+```
+
+93.26%
+
+>Q2: What proportion of structures in the PDB are protein?
+
+
+```{r}
+nums<-function(x){(as.numeric(gsub(",","",x)))}
+numbers<-apply(pdbstats,2,nums)
+```
+
+
+```{r}
+(numbers[1, "Total"]/ sum(numbers[,"Total"])*100)
+
+```
+
+##2. Visualizing the HIV-1 protease structure
+
+We will learn the basics of Mol*(mol-star) homepage: https://molstar.org/viewer/
+
+We wil play with PDB code 1HSG
+
+![HIV-Pr with a bound inhibitor](1HSG.png)
+
+show the ASP 25 amino acids:
+
+![HIV-Pr with a bound inhibitor showing the two important asp 25 amino acids](1HSG 2.png)
+
+## Back to R and working with PDB structures
+Predict the dynamics (flexibility) of an important protein:)
+
+```{r}
+library(bio3d)
+hiv<-read.pdb("1hsg")
+hiv
+```
+
+```{r}
+head(hiv$atom)
+```
+
+```{r}
+pdbseq(hiv)
+```
+
+here we will do a normal mode analysis (nma) to predict functional motions
+
+```{r}
+adk<-read.pdb("6s36")
+adk
+```
+
+```{r}
+modes<-nma(adk)
+plot(modes)
+```
+
+Make a "movie" called a trajectory of the predicted motions
+
+```{r}
+mktrj(modes, file="adk_m7.pdb")
+```
+
+then I can open this file in Mol*
