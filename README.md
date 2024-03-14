@@ -3,7 +3,7 @@ My class work from W24 for [BIMM 143 at UC San Diego](https://liliajimenez21.git
 
 #contents
 
--Class 4: [Bioinformatics data analysis with R]()
+-Class 4: [Bioinformatics data analysis with R](https://github.com/LiliaJimenez21/bimm143/blob/main/class04/class4.pdf)
 
 -Class 5: [Data viz with ggplot2](https://github.com/LiliaJimenez21/bimm143/blob/main/class05/Class-5.pdf)
 
